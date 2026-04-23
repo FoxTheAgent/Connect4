@@ -1,86 +1,86 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements MouseListener {
 
-    // Størrelse på hver celle (pixel)
-    static final int CELL = 80;
-
-    // Spillebræt
+    int cellSize = 80;
     Board board = new Board();
-
-    // Starter med spiller 1
     int player = 1;
 
     public GamePanel() {
-        // Sætter størrelse på panelet
-        setPreferredSize(new Dimension(Board.COLS * CELL, Board.ROWS * CELL));
-
-        // Gør så vi kan registrere museklik
+        setPreferredSize(new Dimension(560, 480));
         addMouseListener(this);
     }
 
-    @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g); // Rydder skærmen
+        super.paintComponent(g);
 
-        // Gennemgår hele gridet
-        for (int r = 0; r < Board.ROWS; r++) {
-            for (int c = 0; c < Board.COLS; c++) {
+        for (int r = 0; r < 6; r++) {
+            for (int c = 0; c < 7; c++) {
 
-                // Vælg farve baseret på spiller
-                if (board.grid[r][c] == 1)
+                if (board.grid[r][c] == 1) {
                     g.setColor(Color.RED);
-                else if (board.grid[r][c] == 2)
+                    g.fillRect(c * 80, r * 80, 80, 80);
+                }
+                if (board.grid[r][c] == 2) {
                     g.setColor(Color.BLUE);
-                else
+                    g.fillRect(c * 80, r * 80, 80, 80);
+                }
+                if (board.grid[r][c] == 0) {
                     g.setColor(Color.WHITE);
+                    g.fillRect(c * 80, r * 80, 80, 80);
+                }
 
-                // Tegn selve feltet
-                g.fillRect(c * CELL, r * CELL, CELL, CELL);
-
-                // Tegn kanten
                 g.setColor(Color.BLACK);
-                g.drawRect(c * CELL, r * CELL, CELL, CELL);
+                g.drawRect(c * 80, r * 80, 80, 80);
             }
         }
     }
 
-    @Override
     public void mouseClicked(MouseEvent e) {
+        int col = e.getX() / 80;
 
-        // Finder hvilken kolonne der blev klikket
-        int col = e.getX() / CELL;
+        boolean worked = board.drop(col, player);
 
-        // Prøv at droppe en brik
-        if (board.drop(col, player)) {
+        if (worked == true) {
+            repaint();
 
-            // Tjek om spilleren har vundet
-            if (board.checkWinner(player)) {
-                repaint(); // Opdater skærm
+            boolean winner = board.checkWinner(player);
 
-                // Vis vinder-besked
-                JOptionPane.showMessageDialog(this, "Spiller " + player + " vinner!");
+            if (winner == true) {
+                String message = "Spiller " + player + " vinder!";
+                JOptionPane.showMessageDialog(this, message);
 
-                // Reset spillet
                 board = new Board();
                 player = 1;
                 repaint();
                 return;
             }
 
-            // Skift spiller (1 → 2 eller 2 → 1)
-            player = (player == 1) ? 2 : 1;
+            if (player == 1) {
+                player = 2;
+            } else {
+                player = 1;
+            }
 
-            // Opdater skærm
             repaint();
         }
     }
 
-    // Disse metoder skal være der, men bruges ikke
-    @Override public void mousePressed(MouseEvent e) {}
-    @Override public void mouseReleased(MouseEvent e) {}
-    @Override public void mouseEntered(MouseEvent e) {}
-    @Override public void mouseExited(MouseEvent e) {}
+    public void mousePressed(MouseEvent e) {
+    }
+
+    public void mouseReleased(MouseEvent e) {
+    }
+
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    public void mouseExited(MouseEvent e) {
+    }
 }
