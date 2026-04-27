@@ -25,62 +25,62 @@ public class GamePanel extends JPanel implements MouseListener {
 
                 if (board.grid[r][c] == 1) {
                     g.setColor(Color.RED);
-                    g.fillRect(c * 80, r * 80, 80, 80);
-                }
-                if (board.grid[r][c] == 2) {
+                } else if (board.grid[r][c] == 2) {
                     g.setColor(Color.BLUE);
-                    g.fillRect(c * 80, r * 80, 80, 80);
-                }
-                if (board.grid[r][c] == 0) {
+                } else {
                     g.setColor(Color.WHITE);
-                    g.fillRect(c * 80, r * 80, 80, 80);
                 }
 
+                g.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
+
                 g.setColor(Color.BLACK);
-                g.drawRect(c * 80, r * 80, 80, 80);
+                g.drawRect(c * cellSize, r * cellSize, cellSize, cellSize);
             }
         }
     }
 
     public void mouseClicked(MouseEvent e) {
-        int col = e.getX() / 80;
+        int col = e.getX() / cellSize;
 
         boolean worked = board.drop(col, player);
 
-        if (worked == true) {
+        if (worked) {
             repaint();
 
             boolean winner = board.checkWinner(player);
 
-            if (winner == true) {
+            if (winner) {
                 String message = "Spiller " + player + " vinder!";
-                JOptionPane.showMessageDialog(this, message);
 
-                board = new Board();
-                player = 1;
-                repaint();
+                Object[] options = {"Spil igen", "Afslut"};
+                int choice = JOptionPane.showOptionDialog(
+                        this,
+                        message,
+                        "Spillet er slut",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE,
+                        null,
+                        options,
+                        options[0]
+                );
+
+                if (choice == 0) {
+                    board = new Board();
+                    player = 1;
+                    repaint();
+                } else {
+                    System.exit(0);
+                }
                 return;
             }
 
-            if (player == 1) {
-                player = 2;
-            } else {
-                player = 1;
-            }
-
+            player = (player == 1) ? 2 : 1;
             repaint();
         }
     }
 
-    public void mousePressed(MouseEvent e) {
-    }
-
-    public void mouseReleased(MouseEvent e) {
-    }
-
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    public void mouseExited(MouseEvent e) {
-    }
+    public void mousePressed(MouseEvent e) {}
+    public void mouseReleased(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {}
 }

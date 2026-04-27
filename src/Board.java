@@ -19,7 +19,6 @@ public class Board {
     }
 
     public boolean checkWinner(int p) {
-
         for (int r = 0; r < ROWS; r++) {
             for (int c = 0; c < COLS; c++) {
 
@@ -56,7 +55,6 @@ public class Board {
                     return true;
             }
         }
-
         return false;
     }
 }
